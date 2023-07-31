@@ -16,6 +16,7 @@ const bn: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} টি বার্তা`,
+    ChatItemSearchResultCount: (count: number) => `${count} টি মিলছে`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} টি বার্তা`,

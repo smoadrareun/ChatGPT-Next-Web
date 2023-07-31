@@ -9,6 +9,7 @@ const ru: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} сообщений`,
+    ChatItemSearchResultCount: (count: number) => `${count} результатов поиска`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} сообщений с ChatGPT`,

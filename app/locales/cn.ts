@@ -15,6 +15,7 @@ const cn = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
+    ChatItemSearchResultCount: (count: number) => `${count} 条匹配结果`,
   },
   Chat: {
     SubTitle: (count: number) => `共 ${count} 条对话`,

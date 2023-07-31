@@ -9,6 +9,7 @@ const ko: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count}개의 메시지`,
+    ChatItemSearchResultCount: (count: number) => `${count}개의 검색 결과`,
   },
   Chat: {
     SubTitle: (count: number) => `ChatGPT와의 ${count}개의 메시지`,

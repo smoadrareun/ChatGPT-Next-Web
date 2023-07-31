@@ -8,6 +8,7 @@ const no: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} meldinger`,
+    ChatItemSearchResultCount: (count: number) => `${count} treff`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} meldinger med ChatGPT`,

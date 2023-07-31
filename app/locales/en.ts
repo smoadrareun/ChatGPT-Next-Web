@@ -17,6 +17,7 @@ const en: LocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
+    ChatItemSearchResultCount: (count: number) => `${count} matched`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} messages`,

@@ -8,6 +8,7 @@ const tw: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 條對話`,
+    ChatItemSearchResultCount: (count: number) => `${count} 個搜尋結果`,
   },
   Chat: {
     SubTitle: (count: number) => `您已經與 ChatGPT 進行了 ${count} 條對話`,

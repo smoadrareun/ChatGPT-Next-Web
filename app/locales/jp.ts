@@ -9,6 +9,7 @@ const jp: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 通のチャット`,
+    ChatItemSearchResultCount: (count: number) => `${count} 件の検索結果`,
   },
   Chat: {
     SubTitle: (count: number) => `ChatGPTとの ${count} 通のチャット`,

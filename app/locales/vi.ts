@@ -9,6 +9,7 @@ const vi: PartialLocaleType = {
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} tin nhắn`,
+    ChatItemSearchResultCount: (count: number) => `${count} kết quả tìm kiếm`,
   },
   Chat: {
     SubTitle: (count: number) => `${count} tin nhắn với ChatGPT`,

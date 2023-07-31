@@ -19,6 +19,28 @@ import { Mask } from "../store/mask";
 import { useRef, useEffect } from "react";
 import { showConfirm } from "./ui-lib";
 
+function getMatchedTitle(title: string, searchText?: string) {
+  if (!searchText) {
+    return title;
+  }
+  const lowerCaseTitle = title.toLowerCase();
+  const lowerCaseMatchedText = searchText.toLowerCase();
+  const startIndex = lowerCaseTitle.indexOf(lowerCaseMatchedText);
+
+  if (startIndex === -1) {
+    return title;
+  }
+
+  const endIndex = startIndex + searchText.length;
+
+  return (
+    <>
+      {title.slice(0, startIndex)}
+      <span style={{ color: "red" }}>{title.slice(startIndex, endIndex)}</span>
+      {title.slice(endIndex)}
+    </>
+  );
+}
 export function ChatItem(props: {
   onClick?: () => void;
   onDelete?: () => void;
@@ -29,6 +51,8 @@ export function ChatItem(props: {
   id: string;
   index: number;
   narrow?: boolean;
+  matchedMessageCount?: number;
+  searchText?: string;
   mask: Mask;
 }) {
   const draggableRef = useRef<HTMLDivElement | null>(null);
@@ -40,7 +64,11 @@ export function ChatItem(props: {
     }
   }, [props.selected]);
   return (
-    <Draggable draggableId={`${props.id}`} index={props.index}>
+    <Draggable
+      draggableId={`${props.id}`}
+      index={props.index}
+      isDragDisabled={!!props.searchText}
+    >
       {(provided) => (
         <div
           className={`${styles["chat-item"]} ${
@@ -68,11 +96,22 @@ export function ChatItem(props: {
             </div>
           ) : (
             <>
-              <div className={styles["chat-item-title"]}>{props.title}</div>
+              <div className={styles["chat-item-title"]}>
+                {getMatchedTitle(props.title, props.searchText)}
+              </div>
               <div className={styles["chat-item-info"]}>
-                <div className={styles["chat-item-count"]}>
-                  {Locale.ChatItem.ChatItemCount(props.count)}
-                </div>
+                {props.matchedMessageCount && !!props.searchText ? (
+                  <div className={styles["chat-item-count"]}>
+                    {Locale.ChatItem.ChatItemSearchResultCount(
+                      props.matchedMessageCount,
+                    )}
+                  </div>
+                ) : (
+                  <div className={styles["chat-item-count"]}>
+                    {Locale.ChatItem.ChatItemCount(props.count)}
+                  </div>
+                )}
+
                 <div className={styles["chat-item-date"]}>{props.time}</div>
               </div>
             </>
@@ -91,14 +130,19 @@ export function ChatItem(props: {
 }
 
 export function ChatList(props: { narrow?: boolean }) {
-  const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
-    (state) => [
-      state.sessions,
-      state.currentSessionIndex,
-      state.selectSession,
-      state.moveSession,
-    ],
-  );
+  const [
+    searchText,
+    filteredSessions,
+    selectedIndex,
+    selectSession,
+    moveSession,
+  ] = useChatStore((state) => [
+    state.searchText,
+    state.filteredSessions,
+    state.currentSessionIndex,
+    state.selectSession,
+    state.moveSession,
+  ]);
   const chatStore = useChatStore();
   const navigate = useNavigate();
 
@@ -127,7 +171,7 @@ export function ChatList(props: { narrow?: boolean }) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {sessions.map((item, i) => (
+            {filteredSessions.map((item, i) => (
               <ChatItem
                 title={item.topic}
                 time={new Date(item.lastUpdate).toLocaleString()}
@@ -150,6 +194,8 @@ export function ChatList(props: { narrow?: boolean }) {
                 }}
                 narrow={props.narrow}
                 mask={item.mask}
+                matchedMessageCount={item.matchedMessageCount}
+                searchText={searchText}
               />
             ))}
             {provided.placeholder}

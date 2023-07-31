@@ -56,6 +56,11 @@ export interface ChatSession {
   mask: Mask;
 }
 
+export interface ChatFilteredSession extends ChatSession {
+  matchedMessageCount?: number;
+  sessionIndex?: number;
+}
+
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
 export const BOT_HELLO: ChatMessage = createMessage({
   role: "assistant",
@@ -81,7 +86,9 @@ function createEmptySession(): ChatSession {
 }
 
 interface ChatStore {
+  searchText: string;
   sessions: ChatSession[];
+  filteredSessions: ChatFilteredSession[];
   currentSessionIndex: number;
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
@@ -100,6 +107,8 @@ interface ChatStore {
     messageIndex: number,
     updater: (message?: ChatMessage) => void,
   ) => void;
+  updateFilteredSessions: (data: ChatFilteredSession[]) => void;
+  updateSearchText: (searchText: string) => void;
   resetSession: () => void;
   getMessagesWithMemory: () => ChatMessage[];
   getMemoryPrompt: () => ChatMessage;
@@ -137,7 +146,9 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 export const useChatStore = create<ChatStore>()(
   persist(
     (set, get) => ({
+      searchText: "",
       sessions: [createEmptySession()],
+      filteredSessions: [],
       currentSessionIndex: 0,
 
       clearSessions() {
@@ -174,6 +185,7 @@ export const useChatStore = create<ChatStore>()(
           return {
             currentSessionIndex: newIndex,
             sessions: newSessions,
+            filteredSessions: newSessions,
           };
         });
       },
@@ -469,6 +481,14 @@ export const useChatStore = create<ChatStore>()(
         const messages = session?.messages;
         updater(messages?.at(messageIndex));
         set(() => ({ sessions }));
+      },
+
+      updateFilteredSessions(data) {
+        set(() => ({ filteredSessions: data }));
+      },
+
+      updateSearchText(searchText) {
+        set(() => ({ searchText }));
       },
 
       resetSession() {
